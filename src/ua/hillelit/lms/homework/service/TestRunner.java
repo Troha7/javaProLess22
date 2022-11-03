@@ -20,7 +20,7 @@ import ua.hillelit.lms.homework.annotations.Test;
  * annotations:
  * <p>{@link BeforeSuite} has the highest priority for running method, and can be set only once.
  * If not trows {@exception IllegalAccessException}.
- * <p>{@link Test} run methods for priority value (1...9).
+ * <p>{@link Test} run methods for priority value (1...10).
  * If the priority value is not in these aisles, method will not be run.
  * <p>{@link AfterSuite} has the lowest priority for running method, and can be set only once.
  * If not trows {@exception IllegalAccessException}.
@@ -31,12 +31,15 @@ import ua.hillelit.lms.homework.annotations.Test;
 
 public class TestRunner {
 
+  private final static int MIN = 0; // MIN priority level
+  private final static int MAX = 10; // MAX priority level
+
   public static void start(Class<?> classTest)
       throws InstantiationException, IllegalAccessException {
 
     Object testClass = classTest.newInstance();
     List<Method> beforeSuites = getAnnotationMethod(testClass, BeforeSuite.class);
-    List<Method> test = getSortTestMethods(testClass);
+    List<Method> test = getSortTestMethods(testClass, MIN, MAX);
     List<Method> afterSuites = getAnnotationMethod(testClass, AfterSuite.class);
     List<Method> collectedMethods = getCollectedMethods(beforeSuites, test, afterSuites);
     runAnnotationMethods(testClass, collectedMethods);
@@ -62,12 +65,14 @@ public class TestRunner {
     return sortedMethods;
   }
 
-  private static List<Method> getSortTestMethods(Object testClass) {
+  private static List<Method> getSortTestMethods(Object testClass, int min, int max) {
 
     List<Method> methods = Arrays.asList(testClass.getClass().getMethods());
 
     return methods.stream()
         .filter(method -> method.isAnnotationPresent(Test.class))
+        .filter(method -> method.getAnnotation(Test.class).value() > min
+            && method.getAnnotation(Test.class).value() <= max)
         .sorted(Comparator.comparingInt(method -> method.getAnnotation(Test.class).value()))
         .collect(Collectors.toList());
   }

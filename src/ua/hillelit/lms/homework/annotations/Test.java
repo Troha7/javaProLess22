@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * This {@code @Test} annotation indicates the execution priority of method.
- * <p>Valid values (1 ... 9). (Value = 1) is the highest priority.
+ * <p>Valid values (1 ... 10). (Value = 1) is the highest priority.
  * <p>Default value (1).
  * <p>
  *
