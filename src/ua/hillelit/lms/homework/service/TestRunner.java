@@ -86,13 +86,13 @@ public class TestRunner {
         .filter(method -> method.isAnnotationPresent(annotation))
         .collect(Collectors.toList());
 
-    multipleAnnotationException(methodList);
+    checkAnnotatedMethodSize(methodList);
 
     return methodList;
   }
 
   //Throw IllegalAccessException when annotation exists on classTest more than once.
-  private static void multipleAnnotationException(List<Method> methods) {
+  private static void checkAnnotatedMethodSize(List<Method> methods) {
     String warning = "Not allowed to use more then once! " + methods;
     if (methods.size() > 1) {
       throw new IllegalStateException(warning);
